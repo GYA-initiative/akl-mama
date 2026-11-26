@@ -236,7 +236,7 @@ document.getElementById("closeCart").onclick=()=>open(false);ov.onclick=()=>open
 function render(){
   const ids=Object.keys(cart).filter(k=>cart[k]>0&&all[k]);let tot=0,count=0;
   document.getElementById("items").innerHTML=ids.length?ids.map(id=>{const p=all[id],q=cart[id];tot+=p.price*q;count+=q;
-    return `<div class="item"><div class="t">${p.img?`<img src="${esc(src(p.img))}" alt="">`:""}</div><div class="info"><h4>${esc(p.name)}</h4><p>${fmt(p.price)}</p><div class="qty"><div class="q"><button data-a="p" data-id="${id}">+</button><span>${q}</span><button data-a="m" data-id="${id}">−</button></div><button class="del" data-a="d" data-id="${id}" aria-label="حذف">حذف</button></div></div><div class="line">${fmt(p.price*q)}</div></div>`}).join(""):'<div class="empty">السلة فاضية</div>';
+    return `<div class="item"><div class="t">${p.img?`<img src="${esc(src(p.img))}" alt="">`:""}</div><div class="info"><h4>${esc(p.name)}</h4><p>${fmt(p.price)}</p><div class="qty"><div class="q"><button data-a="m" data-id="${id}">−</button><span>${q}</span><button data-a="p" data-id="${id}">+</button></div><button class="del" data-a="d" data-id="${id}" aria-label="حذف"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button></div></div><div class="line">${fmt(p.price*q)}</div></div>`}).join(""):'<div class="empty">السلة فاضية</div>';
   document.getElementById("badge").textContent=count;
   document.getElementById("total").textContent=fmt(tot)+" EGP";
   return {ids,tot};
