@@ -129,6 +129,7 @@ body.hasstk .wa{bottom:90px!important}body.hasstk footer{padding-bottom:90px}
 #mnu a,#mnu button.mi{display:flex;align-items:center;gap:10px;padding:14px;border-radius:12px;color:var(--text);text-decoration:none;font:inherit;font-weight:700;font-size:16px;background:var(--card);border:1px solid var(--line);cursor:pointer;text-align:start;width:100%}
 #mnu a.pri{background:var(--red);color:#fff;border-color:var(--red)}
 </style>
+<style>.strip{overflow:hidden!important;direction:ltr}.strip .mq{display:flex;flex:none;width:max-content;animation:mq 22s linear infinite}.strip:hover .mq,.strip:active .mq{animation-play-state:paused}.strip span{direction:rtl;flex:none}@keyframes mq{to{transform:translateX(-50%)}}@media (prefers-reduced-motion:reduce){.strip{overflow-x:auto!important}.strip .mq{animation:none}}</style>
 </head>
 <body>
 <div class="top">أكل بيتي فريش جاهز على التسوية</div>
@@ -151,7 +152,7 @@ body.hasstk .wa{bottom:90px!important}body.hasstk footer{padding-bottom:90px}
 <div class="how"><div><b>1</b>اختار أكلك</div><div><b>2</b>أضف للسلة</div><div><b>3</b>إتمام الطلب</div></div>
 <script>document.getElementById("orderNow").onclick=function(){var t=document.querySelector(".cats")||document.getElementById("sections");t.scrollIntoView({behavior:"smooth"})}</script>
 
-<div class="strip"><span>أكل بيتي طازج وجاهز على التسوية</span><span>الدفع عند الاستلام متاح</span><span>توصيل لحد باب البيت</span><span><a href="track.html" style="color:inherit">تتبع طلبك</a></span></div>
+<div class="strip"><div class="mq"><span>أكل بيتي طازج وجاهز على التسوية</span><span>الدفع عند الاستلام متاح</span><span>توصيل لحد باب البيت</span><span><a href="track.html" style="color:inherit">تتبع طلبك</a></span><span>أكل بيتي طازج وجاهز على التسوية</span><span>الدفع عند الاستلام متاح</span><span>توصيل لحد باب البيت</span><span><a tabindex="-1" aria-hidden="true" href="track.html" style="color:inherit">تتبع طلبك</a></span></div></div>
 
 <div class="cats"><div class="cat" data-i="c1"><span>مشويات</span></div><div class="cat" data-i="c2"><span>أطباق رئيسية</span></div></div>
 
@@ -218,7 +219,7 @@ document.getElementById("closeCart").onclick=()=>open(false);ov.onclick=()=>open
 function render(){
   const ids=Object.keys(cart).filter(k=>cart[k]>0&&all[k]);let tot=0,count=0;
   document.getElementById("items").innerHTML=ids.length?ids.map(id=>{const p=all[id],q=cart[id];tot+=p.price*q;count+=q;
-    return `<div class="item"><div class="t">${p.img?`<img src="${esc(src(p.img))}" alt="">`:"🍽️"}</div><div class="info"><h4>${esc(p.name)}</h4><p>${fmt(p.price)}</p><div class="qty"><div class="q"><button data-a="p" data-id="${id}">+</button><span>${q}</span><button data-a="m" data-id="${id}">−</button></div><button class="del" data-a="d" data-id="${id}" aria-label="حذف">🗑</button></div></div><div class="line">${fmt(p.price*q)}</div></div>`}).join(""):'<div class="empty">السلة فاضية</div>';
+    return `<div class="item"><div class="t">${p.img?`<img src="${esc(src(p.img))}" alt="">`:""}</div><div class="info"><h4>${esc(p.name)}</h4><p>${fmt(p.price)}</p><div class="qty"><div class="q"><button data-a="p" data-id="${id}">+</button><span>${q}</span><button data-a="m" data-id="${id}">−</button></div><button class="del" data-a="d" data-id="${id}" aria-label="حذف">حذف</button></div></div><div class="line">${fmt(p.price*q)}</div></div>`}).join(""):'<div class="empty">السلة فاضية</div>';
   document.getElementById("badge").textContent=count;
   document.getElementById("total").textContent=fmt(tot)+" EGP";
   return {ids,tot};
@@ -227,31 +228,20 @@ document.getElementById("items").addEventListener("click",e=>{const b=e.target.c
   if(a==="p")cart[id]++;else if(a==="m")cart[id]=Math.max(0,cart[id]-1);else cart[id]=0;render()});
 const mod=document.getElementById("mod"),mb=document.getElementById("mbody");
 const saved=()=>{try{return JSON.parse(localStorage.getItem("mama_cust")||"{}")}catch(e){return{}}};
-document.getElementById("goCheckout").onclick=()=>{
-  const {ids,tot}=render();if(!ids.length){alert("السلة فاضية");return}
-  const c=saved();
-  mb.innerHTML=`<h2>بيانات التوصيل</h2><p class="s">اكتب بياناتك وهنجهز طلبك.</p>
-  <form id="of" novalidate><label>الاسم</label><input id="fn" autocomplete="name" value="${esc(c.name||"")}" maxlength="80">
-  <label>رقم الموبايل</label><input id="fp" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" value="${esc(c.phone||"")}" placeholder="01xxxxxxxxx" maxlength="20">
-  <label>العنوان بالتفصيل</label><textarea id="fa" autocomplete="street-address" maxlength="300">${esc(c.address||"")}</textarea>
-  ${MA.session()?`<div class="who"><span>داخل بحساب: <b dir="ltr">${esc(MA.session().email)}</b></span><a id="lo">خروج</a></div>`:`<div class="acc"><div class="tg"><button type="button" id="tn" class="on">حساب جديد</button><button type="button" id="te">عندي حساب</button></div><label>البريد الإلكتروني</label><input id="fm" type="email" dir="ltr" autocomplete="email" inputmode="email" maxlength="120"><label>كلمة المرور</label><input id="fw" type="password" dir="ltr" autocomplete="new-password" maxlength="72" placeholder="6 حروف أو أكتر"></div>`}
-  <div class="sum">${ids.map(i=>`<div><span>${esc(all[i].name)} × ${cart[i]}</span><b>${fmt(all[i].price*cart[i])}</b></div>`).join("")}<div style="border-top:1px solid var(--line);margin-top:6px;padding-top:6px"><b style="direction:rtl">الإجمالي</b><b>${fmt(tot)} EGP</b></div><div style="color:var(--muted);font-size:12px"><span>الدفع عند الاستلام. الشحن يتحدد عند التأكيد.</span></div></div>
-  <div class="err" id="fe"></div><button class="checkout" id="fs" type="submit">تأكيد الطلب</button><button class="gh" type="button" id="fc">رجوع</button></form>`;
+function showAuth(){
+  mb.innerHTML=`<h2>حسابك</h2><p class="s">سجّل حساب جديد أو ادخل بحسابك عشان تتابع طلبك.</p>
+  <form id="af" novalidate><div class="acc"><div class="tg"><button type="button" id="tn" class="on">حساب جديد</button><button type="button" id="te">عندي حساب</button></div><label>البريد الإلكتروني</label><input id="fm" type="email" dir="ltr" autocomplete="email" inputmode="email" maxlength="120"><label>كلمة المرور</label><input id="fw" type="password" dir="ltr" autocomplete="new-password" maxlength="72" placeholder="6 حروف أو أكتر"></div>
+  <div class="err" id="fe"></div><button class="checkout" id="fs" type="submit">متابعة</button><button class="gh" type="button" id="fc">رجوع</button></form>`;
   mod.classList.add("on");
   document.getElementById("fc").onclick=()=>mod.classList.remove("on");
-  let mode="new";const tn=document.getElementById("tn"),te=document.getElementById("te"),lo=document.getElementById("lo");
-  if(tn){tn.onclick=()=>{mode="new";tn.classList.add("on");te.classList.remove("on");fw.autocomplete="new-password"};te.onclick=()=>{mode="old";te.classList.add("on");tn.classList.remove("on");fw.autocomplete="current-password"}}
-  if(lo)lo.onclick=()=>{MA.logout();mod.classList.remove("on");document.getElementById("goCheckout").click()};
+  const lo=document.getElementById("lo");lo.onclick=()=>{MA.logout();showAuth()};
   document.getElementById("of").onsubmit=async e=>{
     e.preventDefault();const n=fn.value.trim(),p=fp.value.trim(),a=fa.value.trim(),er=document.getElementById("fe");
     if(n.length<2){er.textContent="اكتب الاسم";return}
     if(p.replace(/\D/g,"").length<8){er.textContent="رقم الموبايل غير صحيح";return}
     if(a.length<5){er.textContent="اكتب العنوان بالتفصيل";return}
-    const em=document.getElementById("fm"),pw=document.getElementById("fw");
-    if(em){if(!/^\S+@\S+\.\S+$/.test(em.value.trim())){er.textContent="اكتب بريد إلكتروني صحيح";return}if(pw.value.length<6){er.textContent="كلمة المرور لازم تكون 6 حروف أو أكتر";return}}
     const btn=document.getElementById("fs");btn.disabled=true;btn.textContent="جاري الإرسال…";er.textContent="";
     try{
-      if(em){if(mode==="new")await MA.signup(em.value.trim(),pw.value);else await MA.login(em.value.trim(),pw.value)}
       const tk=await MA.token();if(!tk)throw new Error("سجّل دخول الأول");
       const r=await fetch(SB+"/rest/v1/rpc/mama_place_order",{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json",Authorization:"Bearer "+tk},body:JSON.stringify({p_name:n,p_phone:p,p_address:a,p_notes:document.getElementById("cartNotes").value,p_items:ids.map(i=>({id:Number(i),qty:cart[i]}))})});
       if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(/login required/.test(j.message||"")?"سجّل دخول الأول":/too many/.test(j.message||"")?"طلبات كتير في وقت قصير، جرّب بعد شوية":"تعذر إرسال الطلب، جرّب تاني")}
@@ -259,7 +249,7 @@ document.getElementById("goCheckout").onclick=()=>{
       localStorage.setItem("mama_cust",JSON.stringify({name:n,phone:p,address:a}));
       localStorage.setItem("mama_last",JSON.stringify({code,phone:p}));
       ids.forEach(i=>cart[i]=0);document.getElementById("cartNotes").value="";render();open(false);
-      mb.innerHTML=`<h2>تم استلام طلبك ✅</h2><p class="s">احتفظ بكود الطلب لمتابعة حالته.</p><div class="code">${esc(code)}</div><div class="sum" style="margin:0 0 10px"><div><span>الاسم</span><b>${esc(n)}</b></div><div><span>الموبايل</span><b dir="ltr">${esc(p)}</b></div><div><span>العنوان</span><b>${esc(a)}</b></div></div><a class="lnk" href="track.html">تتبع طلبي</a><button class="gh" id="fc2">إغلاق</button>`;
+      mb.innerHTML=`<h2>تم استلام طلبك</h2><p class="s">احتفظ بكود الطلب لمتابعة حالته.</p><div class="code">${esc(code)}</div><div class="sum" style="margin:0 0 10px"><div><span>الاسم</span><b>${esc(n)}</b></div><div><span>الموبايل</span><b dir="ltr">${esc(p)}</b></div><div><span>العنوان</span><b>${esc(a)}</b></div></div><a class="lnk" href="track.html">تتبع طلبي</a><button class="gh" id="fc2">إغلاق</button>`;
       document.getElementById("fc2").onclick=()=>mod.classList.remove("on");
     }catch(x){er.textContent=x.message;btn.disabled=false;btn.textContent="تأكيد الطلب"}
   };
