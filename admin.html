@@ -36,7 +36,7 @@ header{background:var(--red);color:#fff;padding:12px 16px;display:flex;align-ite
 .fn{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}.fr{margin:8px 0}.fr .l{display:flex;justify-content:space-between;font-weight:700;font-size:15px}.fr .bar{height:12px;background:#f0e8e8;border-radius:99px;margin-top:5px;overflow:hidden}.fr .bar i{display:block;height:100%;background:var(--red);border-radius:99px}.fr small{color:var(--mute)}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px;scrollbar-width:none}.chips button{flex:none;border:1px solid var(--line);background:#fff;border-radius:99px;padding:9px 16px;font-weight:700;font-size:15px;cursor:pointer}.chips button.on{background:var(--red);color:#fff;border-color:var(--red)}
 .btn{padding:13px 18px;font-size:16px;border-radius:12px}.btn.s{padding:10px 14px;font-size:15px}.cb{padding:14px;font-size:17px}.cu b{font-size:19px}input,select,textarea{font-size:16px;padding:13px}
-.mi{grid-template-columns:1fr 100px auto auto}
+.mi{grid-template-columns:1fr 100px auto auto}@media(max-width:600px){.mi{grid-template-columns:1fr auto auto}.mi>div:first-child{grid-column:1/-1}}
 </style>
 </head><body>
 <div id="login" class="login"><form class="lbox" id="lf"><h1>لوحة إدارة أكل ماما</h1><p>الدخول لصاحب المطبخ فقط.</p>
