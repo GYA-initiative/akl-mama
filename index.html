@@ -130,6 +130,10 @@ body.hasstk .wa{bottom:90px!important}body.hasstk footer{padding-bottom:90px}
 #mnu a.pri{background:var(--red);color:#fff;border-color:var(--red)}
 </style>
 <style>.strip{overflow:hidden!important;direction:ltr}.strip .mq{display:flex;flex:none;width:max-content;animation:mq 22s linear infinite}.strip:hover .mq,.strip:active .mq{animation-play-state:paused}.strip span{direction:rtl;flex:none}@keyframes mq{to{transform:translateX(-50%)}}@media (prefers-reduced-motion:reduce){.strip{overflow-x:auto!important}.strip .mq{animation:none}}</style>
+<style>.q2{display:flex;gap:10px;padding:6px 16px 4px;max-width:520px;margin:0 auto}.q2 a{flex:1;text-align:center;padding:15px 8px;border-radius:14px;font-weight:800;font-size:18px;text-decoration:none;border:2px solid var(--red);color:var(--red);background:#fff}.q2 a.w{background:#1f9d55;border-color:#1f9d55;color:#fff}
+.how div{font-size:16px!important}.cta button{font-size:24px!important;padding:18px!important}
+#mbody input,#mbody textarea{font-size:18px!important;padding:15px!important}#mbody label{font-size:16px!important;font-weight:800}#mbody .checkout{font-size:20px!important;padding:18px!important}#mbody .gh{font-size:17px!important;padding:14px!important}
+.card button{min-height:48px;font-size:16px}</style>
 </head>
 <body>
 <div class="top">أكل بيتي فريش جاهز على التسوية</div>
@@ -152,6 +156,7 @@ body.hasstk .wa{bottom:90px!important}body.hasstk footer{padding-bottom:90px}
 <div class="how"><div><b>1</b>اختار أكلك</div><div><b>2</b>أضف للسلة</div><div><b>3</b>إتمام الطلب</div></div>
 <script>document.getElementById("orderNow").onclick=function(){var t=document.querySelector(".cats")||document.getElementById("sections");t.scrollIntoView({behavior:"smooth"})}</script>
 
+<div class="q2"><a href="track.html" id="qTrack">تتبع طلبك</a><a class="w" id="qWa" href="https://wa.me/20106168405" target="_blank" rel="noopener">واتساب</a></div>
 <div class="strip"><div class="mq"><span>أكل بيتي طازج وجاهز على التسوية</span><span>الدفع عند الاستلام متاح</span><span>توصيل لحد باب البيت</span><span><a href="track.html" style="color:inherit">تتبع طلبك</a></span><span>أكل بيتي طازج وجاهز على التسوية</span><span>الدفع عند الاستلام متاح</span><span>توصيل لحد باب البيت</span><span><a tabindex="-1" aria-hidden="true" href="track.html" style="color:inherit">تتبع طلبك</a></span></div></div>
 
 <div class="cats"><div class="cat" data-i="c1"><span>مشويات</span></div><div class="cat" data-i="c2"><span>أطباق رئيسية</span></div></div>
@@ -228,27 +233,9 @@ document.getElementById("items").addEventListener("click",e=>{const b=e.target.c
   if(a==="p")cart[id]++;else if(a==="m")cart[id]=Math.max(0,cart[id]-1);else cart[id]=0;render()});
 const mod=document.getElementById("mod"),mb=document.getElementById("mbody");
 const saved=()=>{try{return JSON.parse(localStorage.getItem("mama_cust")||"{}")}catch(e){return{}}};
-function showAuth(){
-  mb.innerHTML=`<h2>حسابك</h2><p class="s">سجّل حساب جديد أو ادخل بحسابك عشان تتابع طلبك.</p>
-  <form id="af" novalidate><div class="acc"><div class="tg"><button type="button" id="tn" class="on">حساب جديد</button><button type="button" id="te">عندي حساب</button></div><label>البريد الإلكتروني</label><input id="fm" type="email" dir="ltr" autocomplete="email" inputmode="email" maxlength="120"><label>كلمة المرور</label><input id="fw" type="password" dir="ltr" autocomplete="new-password" maxlength="72" placeholder="6 حروف أو أكتر"></div>
-  <div class="err" id="fe"></div><button class="checkout" id="fs" type="submit">متابعة</button><button class="gh" type="button" id="fc">رجوع</button></form>`;
-  mod.classList.add("on");
-  document.getElementById("fc").onclick=()=>mod.classList.remove("on");
-  let mode="new";const tn=document.getElementById("tn"),te=document.getElementById("te");
-  tn.onclick=()=>{mode="new";tn.classList.add("on");te.classList.remove("on");fw.autocomplete="new-password"};te.onclick=()=>{mode="old";te.classList.add("on");tn.classList.remove("on");fw.autocomplete="current-password"};
-  document.getElementById("af").onsubmit=async e=>{
-    e.preventDefault();const er=document.getElementById("fe"),em=document.getElementById("fm"),pw=document.getElementById("fw");
-    if(!/^\S+@\S+\.\S+$/.test(em.value.trim())){er.textContent="اكتب بريد إلكتروني صحيح";return}
-    if(pw.value.length<6){er.textContent="كلمة المرور لازم تكون 6 حروف أو أكتر";return}
-    const btn=document.getElementById("fs");btn.disabled=true;btn.textContent="جاري التحميل…";er.textContent="";
-    try{if(mode==="new")await MA.signup(em.value.trim(),pw.value);else await MA.login(em.value.trim(),pw.value);
-      if(!(await MA.token()))throw new Error("تعذر تسجيل الدخول");showDetails()}
-    catch(x){er.textContent=x.message;btn.disabled=false;btn.textContent="متابعة"}
-  };
-}
 document.getElementById("goCheckout").onclick=()=>{
   const {ids}=render();if(!ids.length){alert("السلة فاضية");return}
-  if(MA.session())showDetails();else showAuth();
+  hit("checkout");showDetails();
 };
 function showDetails(){
   const {ids,tot}=render();const c=saved();
@@ -256,12 +243,10 @@ function showDetails(){
   <form id="of" novalidate><label>الاسم</label><input id="fn" autocomplete="name" value="${esc(c.name||"")}" maxlength="80">
   <label>رقم الموبايل</label><input id="fp" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" value="${esc(c.phone||"")}" placeholder="01xxxxxxxxx" maxlength="20">
   <label>العنوان بالتفصيل</label><textarea id="fa" autocomplete="street-address" maxlength="300">${esc(c.address||"")}</textarea>
-  <div class="who"><span>داخل بحساب: <b dir="ltr">${esc((MA.session()||{}).email||"")}</b></span><a id="lo">خروج</a></div>
   <div class="sum">${ids.map(i=>`<div><span>${esc(all[i].name)} × ${cart[i]}</span><b>${fmt(all[i].price*cart[i])}</b></div>`).join("")}<div style="border-top:1px solid var(--line);margin-top:6px;padding-top:6px"><b style="direction:rtl">الإجمالي</b><b>${fmt(tot)} EGP</b></div><div style="color:var(--muted);font-size:12px"><span>الدفع عند الاستلام. الشحن يتحدد عند التأكيد.</span></div></div>
   <div class="err" id="fe"></div><button class="checkout" id="fs" type="submit">تأكيد الطلب</button><button class="gh" type="button" id="fc">رجوع</button></form>`;
   mod.classList.add("on");
   document.getElementById("fc").onclick=()=>mod.classList.remove("on");
-  document.getElementById("lo").onclick=()=>{MA.logout();showAuth()};
   document.getElementById("of").onsubmit=async e=>{
     e.preventDefault();const n=fn.value.trim(),p=fp.value.trim(),a=fa.value.trim(),er=document.getElementById("fe");
     if(n.length<2){er.textContent="اكتب الاسم";return}
@@ -269,9 +254,9 @@ function showDetails(){
     if(a.length<5){er.textContent="اكتب العنوان بالتفصيل";return}
     const btn=document.getElementById("fs");btn.disabled=true;btn.textContent="جاري الإرسال…";er.textContent="";
     try{
-      const tk=await MA.token();if(!tk)throw new Error("سجّل دخول الأول");
+      const tk=KEY;
       const r=await fetch(SB+"/rest/v1/rpc/mama_place_order",{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json",Authorization:"Bearer "+tk},body:JSON.stringify({p_name:n,p_phone:p,p_address:a,p_notes:document.getElementById("cartNotes").value,p_items:ids.map(i=>({id:Number(i),qty:cart[i]}))})});
-      if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(/login required/.test(j.message||"")?"سجّل دخول الأول":/too many/.test(j.message||"")?"طلبات كتير في وقت قصير، جرّب بعد شوية":"تعذر إرسال الطلب، جرّب تاني")}
+      if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(/login required/.test(j.message||"")?"حاول تاني":/too many/.test(j.message||"")?"طلبات كتير في وقت قصير، جرّب بعد شوية":"تعذر إرسال الطلب، جرّب تاني")}
       const code=(await r.json());
       localStorage.setItem("mama_cust",JSON.stringify({name:n,phone:p,address:a}));
       localStorage.setItem("mama_last",JSON.stringify({code,phone:p}));
@@ -282,7 +267,7 @@ function showDetails(){
   };
 }
 const L=(()=>{try{return JSON.parse(localStorage.getItem("mama_last")||"null")}catch(e){return null}})();
-if(L){const a=document.querySelector(".trk");if(a)a.href="track.html?c="+encodeURIComponent(L.code)+"&p="+encodeURIComponent(L.phone)}
+if(L){const a=document.querySelector(".trk");const q=document.getElementById("qTrack");if(q)q.href="track.html?c="+encodeURIComponent(L.code)+"&p="+encodeURIComponent(L.phone);if(a)a.href="track.html?c="+encodeURIComponent(L.code)+"&p="+encodeURIComponent(L.phone)}
 
 (function(){const m=document.getElementById("mnu"),o=document.getElementById("ov"),b=document.getElementById("menuBtn");
  const set=v=>{m.classList.toggle("on",v);o.classList.toggle("on",v);b.setAttribute("aria-expanded",v)};
@@ -300,6 +285,11 @@ function filt(){const q=document.getElementById("sq").value.trim().toLowerCase()
  document.querySelectorAll("#sections section").forEach(s=>{let n=0;s.querySelectorAll(".card").forEach(c=>{const m=!q||c.querySelector("h3").textContent.toLowerCase().includes(q);c.style.display=m?"":"none";if(m)n++});s.style.display=n?"":"none";if(n)any=true});
  document.getElementById("nores").style.display=any||!q?"none":"block"}
 document.getElementById("sq").oninput=filt;
+</script>
+<script>
+(function(){const SBU="https://jedjixrybyxhanaqokre.supabase.co";let v=localStorage.getItem("mama_vid");if(!v){v=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now()).replace(/[^A-Za-z0-9_-]/g,"").slice(0,32);localStorage.setItem("mama_vid",v)}
+const sent={};window.hit=function(ev){if(sent[ev])return;sent[ev]=1;try{fetch(SBU+"/rest/v1/rpc/mama_hit",{method:"POST",keepalive:true,headers:{apikey:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplZGppeHJ5Ynl4aGFuYXFva3JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU3MDI4NTYsImV4cCI6MjExMTI3ODg1Nn0.cDuijI1dkCsTh5ycPHUPCugEI1_4xQxCko-uhGBEVJs","Content-Type":"application/json"},body:JSON.stringify({p_vid:v,p_ev:ev})})}catch(e){}};hit("visit")})();
+document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest("[data-id][data-a=p]"))hit("cart");if(e.target.closest&&e.target.closest(".card button,.add"))hit("cart")});
 </script>
 </body>
 </html>
