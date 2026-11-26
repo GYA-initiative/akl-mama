@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تتبع الطلب | أكل ماما</title>
-<script src="auth.js"></script><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--red:#A81E24;--bg:#FBFBFB;--line:#e6e6e6;--mute:#6b6b6b}*{box-sizing:border-box;margin:0}
 body{background:var(--bg);font-family:Cairo,Tahoma,sans-serif;color:#111;min-height:100vh}
@@ -7,8 +7,8 @@ body{background:var(--bg);font-family:Cairo,Tahoma,sans-serif;color:#111;min-hei
 .w{max-width:480px;margin:0 auto;padding:20px 16px 50px}h1{font-size:26px;font-weight:900;color:var(--red);margin:6px 0 4px}
 .s{color:var(--mute);font-size:14px;margin-bottom:14px}
 label{display:block;font-weight:700;font-size:14px;margin:12px 0 6px}
-input{width:100%;border:1px solid var(--line);border-radius:12px;padding:14px;font:inherit;font-size:17px;background:#fff}
-button{width:100%;background:var(--red);color:#fff;border:0;border-radius:12px;padding:16px;font:inherit;font-weight:700;font-size:17px;margin-top:16px;cursor:pointer}
+input{width:100%;border:1px solid var(--line);border-radius:12px;padding:16px;font:inherit;font-size:19px;background:#fff}
+button{width:100%;background:var(--red);color:#fff;border:0;border-radius:12px;padding:18px;font:inherit;font-weight:800;font-size:19px;margin-top:16px;cursor:pointer}
 .err{color:#c0392b;margin-top:10px;min-height:22px}
 .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:18px}
 .steps{list-style:none;padding:0;margin:8px 0}
@@ -27,19 +27,15 @@ details.cd{margin-top:22px}details.cd summary{cursor:pointer;color:var(--red);fo
 .ot{font-size:13px;color:#6b6b6b;margin-bottom:4px}
 .det{background:#fff7f7;border:1px solid #f0d4d4;border-radius:12px;padding:10px 12px;margin:10px 0;display:grid;gap:6px}.det small{display:block;color:#6b6b6b;font-size:12px}.det b{font-size:16px}
 </style></head><body><div class="top">أكل ماما</div><div class="w">
-<h1>تتبع طلباتك</h1>
-<div id="auth"><p class="s">سجّل دخول بالبريد وكلمة المرور اللي عملت بيهم الطلب.</p>
-<form id="af"><div class="tg"><button type="button" id="tl" class="on">تسجيل الدخول</button><button type="button" id="tn">حساب جديد</button></div>
-<label>البريد الإلكتروني</label><input id="em" type="email" dir="ltr" autocomplete="email" maxlength="120"><label>كلمة المرور</label><input id="pw" type="password" dir="ltr" autocomplete="current-password" maxlength="72"><button id="ab">دخول</button><div class="err" id="ae"></div></form></div>
-<div id="mine" style="display:none"><div class="who"><span id="whom" dir="ltr"></span><a id="lo">خروج</a></div><div id="list"></div></div>
-<details class="cd" id="cd"><summary>عندك كود طلب قديم؟ تتبع بالكود</summary>
-<form id="f"><label>كود الطلب</label><input id="c" dir="ltr" autocapitalize="characters" maxlength="12" placeholder="مثال: A1B2C3D4"><label>رقم الموبايل</label><input id="p" type="tel" inputmode="tel" dir="ltr" maxlength="20"><button>تتبع</button><div class="err" id="e"></div></form><div id="r"></div></details>
+<h1>تتبع طلبك</h1>
+<p class="s">اكتب كود الطلب ورقم الموبايل اللي طلبت بيه.</p>
+<form id="f"><label>كود الطلب</label><input id="c" dir="ltr" autocapitalize="characters" maxlength="12" placeholder="مثال: A1B2C3D4"><label>رقم الموبايل</label><input id="p" type="tel" inputmode="tel" dir="ltr" maxlength="20" placeholder="01xxxxxxxxx"><button>تتبع طلبي</button><div class="err" id="e"></div></form><div id="r"></div>
 <a class="b" href="index.html">← الرجوع للمنيو</a></div>
 <script>
 const SB="https://jedjixrybyxhanaqokre.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplZGppeHJ5Ynl4aGFuYXFva3JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU3MDI4NTYsImV4cCI6MjExMTI3ODg1Nn0.cDuijI1dkCsTh5ycPHUPCugEI1_4xQxCko-uhGBEVJs";
-const $=i=>document.getElementById(i);let timer;
+const $=i=>document.getElementById(i);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const ST=[["new","📝","استلمنا طلبك"],["preparing","👩‍🍳","الأكل بيتجهز"],["on_the_way","🛵","الطلب في الطريق ليك"],["delivered","✅","تم التوصيل"]];
+const ST=[["new","1","استلمنا طلبك"],["preparing","2","الأكل بيتجهز"],["on_the_way","3","الطلب في الطريق ليك"],["delivered","4","تم التوصيل"]];
 function card(o,head){const idx=ST.findIndex(s=>s[0]===o.status);
   let h='<div class="card">'+head;
   if(o.status==="cancelled")h+='<div class="cx" style="margin-top:12px">تم إلغاء الطلب. تواصل معانا لو محتاج مساعدة.</div>';
@@ -55,25 +51,8 @@ async function go(){
   }catch(x){$("e").textContent="مشكلة في الاتصال، جرّب تاني."}
 }
 $("f").onsubmit=e=>{e.preventDefault();go()};
-async function mine(){
-  const tk=await MA.token();if(!tk){show(false);return}
-  show(true);
-  try{const r=await fetch(SB+"/rest/v1/mama_orders?select=code,name,phone,address,items,total,status,created_at&order=created_at.desc&limit=30",{headers:{apikey:KEY,Authorization:"Bearer "+tk}});
-  if(r.status===401){MA.logout();show(false);return}
-  const a=await r.json();
-  $("list").innerHTML=a.length?a.map(o=>card(o,'<div class="ot">طلب <b dir="ltr">'+esc(o.code)+'</b> · '+new Date(o.created_at).toLocaleString("ar-EG",{dateStyle:"medium",timeStyle:"short"})+'</div>')).join(""):'<div class="card" style="text-align:center">مفيش طلبات لسه. <a href="index.html" style="color:var(--red);font-weight:700">اطلب دلوقتي</a></div>';
-  }catch(x){}
-}
-function show(on){$("auth").style.display=on?"none":"";$("mine").style.display=on?"":"none";if(on)$("whom").textContent=MA.session().email;clearInterval(timer);if(on)timer=setInterval(mine,15000)}
-let mode="old";
-$("tl").onclick=()=>{mode="old";$("tl").classList.add("on");$("tn").classList.remove("on");$("ab").textContent="دخول";$("pw").autocomplete="current-password"};
-$("tn").onclick=()=>{mode="new";$("tn").classList.add("on");$("tl").classList.remove("on");$("ab").textContent="إنشاء حساب";$("pw").autocomplete="new-password"};
-$("af").onsubmit=async e=>{e.preventDefault();$("ae").textContent="";const em=$("em").value.trim(),pw=$("pw").value;
-  if(!/^\S+@\S+\.\S+$/.test(em)||pw.length<6){$("ae").textContent="اكتب البريد وكلمة المرور (6 حروف أو أكتر)";return}
-  $("ab").disabled=true;try{if(mode==="new")await MA.signup(em,pw);else await MA.login(em,pw);$("pw").value="";await mine()}catch(x){$("ae").textContent=x.message}$("ab").disabled=false};
-$("lo").onclick=()=>{MA.logout();$("list").innerHTML="";show(false)};
 const q=new URLSearchParams(location.search);let L=null;try{L=JSON.parse(localStorage.getItem("mama_last")||"null")}catch(e){}
 $("c").value=q.get("c")||"";$("p").value=q.get("p")||"";
-if($("c").value&&$("p").value){$("cd").open=true;go()}
-mine();
+if(!$("c").value&&L){$("c").value=L.code||"";$("p").value=L.phone||""}
+if($("c").value&&$("p").value){go();setInterval(()=>{if(!document.hidden)go()},15000)}
 </script></body></html>
