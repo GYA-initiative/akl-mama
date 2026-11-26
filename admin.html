@@ -28,7 +28,7 @@ header{background:var(--red);color:#fff;padding:12px 16px;display:flex;align-ite
 <div id="login" class="login"><form class="lbox" id="lf"><h1>لوحة إدارة أكل ماما</h1><p>الدخول لصاحب المطبخ فقط.</p>
 <label>البريد الإلكتروني</label><input id="em" type="email" autocomplete="username" required dir="ltr"><label>كلمة المرور</label><input id="pw" type="password" autocomplete="current-password" required dir="ltr">
 <button class="btn">دخول</button><div class="err" id="le"></div></form></div>
-<div id="app" style="display:none"><header><div><b>🍲 لوحة أكل ماما</b></div><div class="sp"></div><button class="btn s" id="out">خروج</button></header>
+<div id="app" style="display:none"><header><div><b>لوحة أكل ماما</b></div><div class="sp"></div><button class="btn s" id="out">خروج</button></header>
 <div class="wrap"><div class="stats"><div class="st"><small>جديد</small><b id="s1">0</b></div><div class="st"><small>بيتجهز</small><b id="s2">0</b></div><div class="st"><small>في الطريق</small><b id="s3">0</b></div><div class="st"><small>إجمالي مبيعات اليوم (EGP)</small><b id="s4">0</b></div></div>
 <div class="tabs"><button id="t1" class="on">الطلبات</button><button id="t2">المنيو</button></div>
 <div id="v1"><div class="tools"><input id="q" placeholder="ابحث بالاسم أو الموبايل أو الكود"><select id="f"><option value="">كل الحالات</option><option value="new">جديد</option><option value="preparing">بيتجهز</option><option value="on_the_way">في الطريق</option><option value="delivered">تم التوصيل</option><option value="cancelled">ملغي</option></select><button class="btn g" id="rf">تحديث</button></div><div id="list"></div></div>
@@ -56,9 +56,9 @@ function render(){
  const rows=orders.filter(o=>(!f||o.status===f)&&(!q||(o.name+o.phone+o.code).toLowerCase().includes(q)));
  $("list").innerHTML=rows.length?rows.map(o=>{const nx={new:["preparing","ابدأ التجهيز"],preparing:["on_the_way","خرج للتوصيل"],on_the_way:["delivered","تم التوصيل"]}[o.status];
  return `<div class="o ${o.status==="new"?"new":""}"><div class="oh"><b>${esc(o.name)} <span style="color:var(--mute);font-weight:400">#${esc(o.code)}</span></b><span class="pill p-${o.status}">${LBL[o.status]}</span></div>
- <div class="ob">📞 <a href="tel:${esc(o.phone)}" dir="ltr">${esc(o.phone)}</a> · 📍 ${esc(o.address)}</div>
+ <div class="ob"><a href="tel:${esc(o.phone)}" dir="ltr">${esc(o.phone)}</a> · ${esc(o.address)}</div>
  <div class="items">${o.items.map(i=>`<div><span>${esc(i.name)} × ${i.qty}</span><b dir="ltr">${Number(i.price*i.qty).toFixed(2)}</b></div>`).join("")}<div style="border-top:1px solid var(--line);margin-top:4px"><b>الإجمالي</b><b dir="ltr">${Number(o.total).toFixed(2)} EGP</b></div></div>
- ${o.notes?`<div class="ob">📝 ${esc(o.notes)}</div>`:""}<div class="ob" style="color:var(--mute);font-size:12px">${new Date(o.created_at).toLocaleString("ar-EG",{timeZone:"Africa/Cairo"})}</div>
+ ${o.notes?`<div class="ob">ملاحظات: ${esc(o.notes)}</div>`:""}<div class="ob" style="color:var(--mute);font-size:12px">${new Date(o.created_at).toLocaleString("ar-EG",{timeZone:"Africa/Cairo"})}</div>
  <div class="acts">${nx?`<button class="btn" data-s="${nx[0]}" data-id="${o.id}">${nx[1]}</button>`:""}${o.status!=="delivered"&&o.status!=="cancelled"?`<button class="btn g" data-s="cancelled" data-id="${o.id}">إلغاء</button>`:""}<button class="btn g" data-del="${o.id}">حذف</button></div></div>`}).join(""):'<div class="empty">مفيش طلبات</div>'}
 $("list").onclick=async e=>{const b=e.target.closest("button");if(!b)return;await ensure();
  if(b.dataset.del){if(!confirm("حذف الطلب نهائيًا؟"))return;const r=await fetch(SB+"/rest/v1/mama_orders?id=eq."+b.dataset.del,{method:"DELETE",headers:H()});if(!r.ok)alert("تعذر الحذف");load();return}
