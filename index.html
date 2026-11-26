@@ -254,7 +254,7 @@ document.getElementById("goCheckout").onclick=()=>{
       localStorage.setItem("mama_cust",JSON.stringify({name:n,phone:p,address:a}));
       localStorage.setItem("mama_last",JSON.stringify({code,phone:p}));
       ids.forEach(i=>cart[i]=0);document.getElementById("cartNotes").value="";render();open(false);
-      mb.innerHTML=`<h2>تم استلام طلبك ✅</h2><p class="s">احتفظ بكود الطلب لمتابعة حالته.</p><div class="code">${esc(code)}</div><a class="lnk" href="track.html">تتبع طلبي</a><button class="gh" id="fc2">إغلاق</button>`;
+      mb.innerHTML=`<h2>تم استلام طلبك ✅</h2><p class="s">احتفظ بكود الطلب لمتابعة حالته.</p><div class="code">${esc(code)}</div><div class="sum" style="margin:0 0 10px"><div><span>الاسم</span><b>${esc(n)}</b></div><div><span>الموبايل</span><b dir="ltr">${esc(p)}</b></div><div><span>العنوان</span><b>${esc(a)}</b></div></div><a class="lnk" href="track.html">تتبع طلبي</a><button class="gh" id="fc2">إغلاق</button>`;
       document.getElementById("fc2").onclick=()=>mod.classList.remove("on");
     }catch(x){er.textContent=x.message;btn.disabled=false;btn.textContent="تأكيد الطلب"}
   };
