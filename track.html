@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تتبع الطلب | أكل ماما</title>
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تتبع الطلب | أكل ماما</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--red:#A81E24;--bg:#FBFBFB;--line:#e6e6e6;--mute:#6b6b6b}*{box-sizing:border-box;margin:0}
@@ -32,11 +32,12 @@ details.cd{margin-top:22px}details.cd summary{cursor:pointer;color:var(--red);fo
 .m.me{align-self:flex-start;background:var(--red);color:#fff}.m.ow{align-self:flex-end;background:#fff;border:1px solid var(--line)}
 .cs{display:flex;gap:8px}.cs input{flex:1;font-size:17px;padding:14px}.cs button{width:auto;margin:0;padding:14px 22px;font-size:17px}
 .em{color:#999;text-align:center;margin:auto;font-size:15px}
+@media (prefers-color-scheme:dark){:root{--bg:#161515;--line:#3a3636}body{color:#f2f2f2}h1{color:#ff6b6b}input{background:#232121;color:#f2f2f2}.card,.m.ow,.who2{background:#232121;color:#f2f2f2}.m.ow{border-color:#3a3636}.cm{background:#1c1a1a}.s,.ot,.det small,.who2{color:#b5b0b0}.det{background:#2a2222;border-color:#4a3030}.steps li{color:#777}.steps i{background:#333}.steps li.done{color:#f2f2f2}.steps li.cur{color:#ff6b6b}.steps li.done i{background:var(--red)}.it{border-color:#3a3636}.tg button{background:none;color:#b5b0b0}.tg button.on{background:var(--red);color:#fff}a.b,.who a,details.cd summary{color:#ff8a8a}.em{color:#888}.cx{background:#3a1f1c}}
 </style></head><body><div class="top">أكل ماما</div><div class="w">
 <h1>تتبع طلبك</h1>
 <p class="s">اكتب كود الطلب ورقم الموبايل اللي طلبت بيه.</p>
 <form id="f"><label>كود الطلب</label><input id="c" dir="ltr" autocapitalize="characters" maxlength="12" placeholder="مثال: A1B2C3D4"><label>رقم الموبايل</label><input id="p" type="tel" inputmode="tel" dir="ltr" maxlength="20" placeholder="01xxxxxxxxx"><button>تتبع طلبي</button><div class="err" id="e"></div></form><div id="r"></div>
-<div class="card chat" id="chat"><h2>رسائل مع المطبخ</h2><div class="s" style="margin:0">اكتب سؤالك أو ملاحظتك وهنرد عليك هنا.</div><div class="cm" id="cm"></div><form class="cs" id="cf"><input id="ci" maxlength="500" autocomplete="off" placeholder="اكتب رسالتك"><button>إرسال</button></form><div class="err" id="ce"></div></div>
+<div class="card chat" id="chat"><h2>شات مع مطبخ ماما</h2><div class="s" style="margin:0">اكتب سؤالك أو ملاحظتك وهنرد عليك هنا.</div><div class="cm" id="cm"></div><form class="cs" id="cf"><input id="ci" maxlength="500" autocomplete="off" placeholder="اكتب رسالتك"><button>إرسال</button></form><div class="err" id="ce"></div></div>
 <a class="b" href="index.html">← الرجوع للمنيو</a></div>
 <script>
 const SB="https://jedjixrybyxhanaqokre.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplZGppeHJ5Ynl4aGFuYXFva3JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU3MDI4NTYsImV4cCI6MjExMTI3ODg1Nn0.cDuijI1dkCsTh5ycPHUPCugEI1_4xQxCko-uhGBEVJs";
