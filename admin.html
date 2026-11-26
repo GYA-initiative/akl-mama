@@ -25,6 +25,14 @@ header{background:var(--red);color:#fff;padding:12px 16px;display:flex;align-ite
 .mi{display:grid;grid-template-columns:1fr 90px auto auto;gap:6px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}
 .mi small{color:var(--mute)}.mi.off{opacity:.55}@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}.mi{grid-template-columns:1fr 80px}}
 .add{background:#fff;border:1px dashed var(--red);border-radius:12px;padding:12px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr 90px auto;gap:6px}@media(max-width:600px){.add{grid-template-columns:1fr 1fr}}
+.cbtn{position:relative}.cbtn i{font-style:normal;background:#fff;color:var(--red);border-radius:10px;padding:0 7px;margin-inline-start:6px;font-size:12px;font-weight:800}
+#cw{position:fixed;inset:0;background:#0007;display:none;z-index:50}#cw.on{display:flex;align-items:flex-end;justify-content:center}
+#cb{background:#fff;width:100%;max-width:480px;height:88vh;border-radius:18px 18px 0 0;display:flex;flex-direction:column;padding:14px}
+#cb .hd{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:17px;margin-bottom:8px}#cb .hd button{background:none;border:1px solid var(--line);border-radius:10px;padding:6px 14px;font:inherit;cursor:pointer}
+#cl{flex:1;overflow:auto;background:#faf6f6;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.m{max-width:80%;padding:10px 14px;border-radius:14px;font-size:16px;line-height:1.6;word-break:break-word}.m small{display:block;font-size:11px;opacity:.7;margin-top:2px}
+.m.me{align-self:flex-start;background:var(--red);color:#fff}.m.cu2{align-self:flex-end;background:#fff;border:1px solid var(--line)}
+#cf{display:flex;gap:8px;margin-top:10px}#ci{flex:1;border:1px solid var(--line);border-radius:12px;padding:14px;font:inherit;font-size:17px}#cf button{background:var(--red);color:#fff;border:0;border-radius:12px;padding:0 22px;font:inherit;font-weight:800;font-size:17px;cursor:pointer}
 </style><style>
 .bnav{position:fixed;inset-inline:0;bottom:0;z-index:20;display:flex;background:#fff;border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom));gap:6px;box-shadow:0 -4px 18px #0000000d}
 .bnav button{flex:1;border:0;background:none;border-radius:12px;padding:12px 4px;font-weight:700;font-size:16px;color:var(--mute);cursor:pointer;position:relative}
@@ -51,10 +59,11 @@ header{background:var(--red);color:#fff;padding:12px 16px;display:flex;align-ite
 <div id="v1" style="display:none"><div class="chips" id="chips"></div><div class="tools"><input id="q" placeholder="ابحث بالاسم أو الموبايل أو الكود"><button class="btn g" id="rf">تحديث</button></div><div id="list"></div></div>
 <div id="v2" style="display:none"><div class="add"><input id="ns" placeholder="القسم (مثال: مشويات)"><input id="nn" placeholder="اسم الصنف"><input id="np" type="number" placeholder="السعر" min="0"><button class="btn" id="na">إضافة صنف</button></div><div id="menu"></div></div>
 </div><nav class="bnav" id="nav"><button id="t0" class="on">نظرة عامة</button><button id="t1">الطلبات<i id="nb" style="display:none">0</i></button><button id="t2">المنيو</button></nav></div>
+<div id="cw"><div id="cb"><div class="hd"><span id="ct"></span><button id="cx">إغلاق</button></div><div id="cl"></div><form id="cf"><input id="ci" maxlength="500" autocomplete="off" placeholder="اكتب ردك"><button>إرسال</button></form></div></div>
 <script>
 const SB="https://jedjixrybyxhanaqokre.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplZGppeHJ5Ynl4aGFuYXFva3JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU3MDI4NTYsImV4cCI6MjExMTI3ODg1Nn0.cDuijI1dkCsTh5ycPHUPCugEI1_4xQxCko-uhGBEVJs";
 const $=i=>document.getElementById(i);const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let FIL="",S=null,orders=[],menu=[],lastNew=-1;
+let FIL="",S=null,orders=[],menu=[],lastNew=-1,UN={},UT=0;
 const LBL={new:"جديد",preparing:"بيتجهز",on_the_way:"في الطريق",delivered:"تم التوصيل",cancelled:"ملغي"};
 const H=()=>({apikey:KEY,Authorization:"Bearer "+S.access_token,"Content-Type":"application/json"});
 async function ensure(){if(S.exp*1000-Date.now()>120000)return;const r=await fetch(SB+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:S.refresh_token})});if(r.ok){const j=await r.json();S={access_token:j.access_token,refresh_token:j.refresh_token,exp:Math.floor(Date.now()/1000)+j.expires_in};sessionStorage.setItem("mama_s",JSON.stringify(S))}else logout()}
@@ -63,14 +72,14 @@ $("lf").onsubmit=async e=>{e.preventDefault();$("le").textContent="";const r=awa
  if(!r.ok){$("le").textContent="البريد أو كلمة المرور غير صحيحة";return}const j=await r.json();S={access_token:j.access_token,refresh_token:j.refresh_token,exp:Math.floor(Date.now()/1000)+j.expires_in};sessionStorage.setItem("mama_s",JSON.stringify(S));start()};
 $("out").onclick=logout;
 function start(){$("login").style.display="none";$("app").style.display="";load();loadMenu();stats();setInterval(()=>{if(!document.hidden)load()},20000)}
-async function load(){try{await ensure();const r=await fetch(SB+"/rest/v1/mama_orders?select=*&order=created_at.desc&limit=500",{headers:H()});if(r.status===401||r.status===403){logout();return}orders=await r.json();
+async function load(){try{await ensure();const r=await fetch(SB+"/rest/v1/mama_orders?select=*&order=created_at.desc&limit=500",{headers:H()});if(r.status===401||r.status===403){logout();return}orders=await r.json();try{const u=await fetch(SB+"/rest/v1/mama_msgs?select=order_id&sender=eq.customer&seen=eq.false&limit=1000",{headers:H()});const ua=u.ok?await u.json():[];UN={};ua.forEach(x=>UN[x.order_id]=(UN[x.order_id]||0)+1);UT=ua.length}catch(e){}
  const n=orders.filter(o=>o.status==="new").length;if(lastNew>=0&&n>lastNew){try{new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=").play()}catch(e){}document.title="(1) طلب جديد!"}else if(n===0)document.title="لوحة إدارة أكل ماما";lastNew=n;render()}catch(e){}}
 function render(){
  const today=new Date().toLocaleDateString("sv-SE",{timeZone:"Africa/Cairo"});
  $("s1").textContent=orders.filter(o=>o.status==="new").length;$("s2").textContent=orders.filter(o=>o.status==="preparing").length;$("s3").textContent=orders.filter(o=>o.status==="on_the_way").length;
  $("s4").textContent=orders.filter(o=>o.status!=="cancelled"&&new Date(o.created_at).toLocaleDateString("sv-SE",{timeZone:"Africa/Cairo"})===today).reduce((a,o)=>a+Number(o.total),0).toFixed(0);
  const q=$("q").value.trim().toLowerCase(),f=FIL;
- const cnt=k=>k?orders.filter(o=>o.status===k).length:orders.length;$("chips").innerHTML=[["","الكل"],["new","جديد"],["preparing","بيتجهز"],["on_the_way","في الطريق"],["delivered","تم التوصيل"],["cancelled","ملغي"]].map(c=>`<button data-f="${c[0]}" class="${f===c[0]?"on":""}">${c[1]} (${cnt(c[0])})</button>`).join("");const nn=cnt("new");$("nb").style.display=nn?"":"none";$("nb").textContent=nn;
+ const cnt=k=>k?orders.filter(o=>o.status===k).length:orders.length;$("chips").innerHTML=[["","الكل"],["new","جديد"],["preparing","بيتجهز"],["on_the_way","في الطريق"],["delivered","تم التوصيل"],["cancelled","ملغي"]].map(c=>`<button data-f="${c[0]}" class="${f===c[0]?"on":""}">${c[1]} (${cnt(c[0])})</button>`).join("");const nn=cnt("new")+UT;$("nb").style.display=nn?"":"none";$("nb").textContent=nn;
  const wa=p=>{let d=String(p).replace(/\D/g,"");if(d.startsWith("00"))d=d.slice(2);else if(d.startsWith("0"))d="20"+d.slice(1);return d};
  const rows=orders.filter(o=>(!f||o.status===f)&&(!q||(o.name+o.phone+o.code).toLowerCase().includes(q)));
  $("list").innerHTML=rows.length?rows.map(o=>{const nx={new:["preparing","ابدأ التجهيز"],preparing:["on_the_way","خرج للتوصيل"],on_the_way:["delivered","تم التوصيل"]}[o.status];
@@ -78,8 +87,8 @@ function render(){
  <div class="cu"><div><small>الاسم</small><b>${esc(o.name)}</b></div><div><small>الموبايل</small><b dir="ltr">${esc(o.phone)}</b></div><div><small>العنوان</small><b>${esc(o.address)}</b></div><div class="cl"><a class="cb" href="tel:${esc(o.phone)}">اتصال</a><a class="cb wa" target="_blank" rel="noopener" href="https://wa.me/${wa(o.phone)}">واتساب</a></div></div>
  <div class="items">${o.items.map(i=>`<div><span>${esc(i.name)} × ${i.qty}</span><b dir="ltr">${Number(i.price*i.qty).toFixed(2)}</b></div>`).join("")}<div style="border-top:1px solid var(--line);margin-top:4px"><b>الإجمالي</b><b dir="ltr">${Number(o.total).toFixed(2)} EGP</b></div></div>
  ${o.notes?`<div class="ob">ملاحظات: ${esc(o.notes)}</div>`:""}<div class="ob" style="color:var(--mute);font-size:12px">${new Date(o.created_at).toLocaleString("ar-EG",{timeZone:"Africa/Cairo"})}</div>
- <div class="acts">${nx?`<button class="btn" data-s="${nx[0]}" data-id="${o.id}">${nx[1]}</button>`:""}${o.status!=="delivered"&&o.status!=="cancelled"?`<button class="btn g" data-s="cancelled" data-id="${o.id}">إلغاء</button>`:""}<button class="btn g" data-del="${o.id}">حذف</button></div></div>`}).join(""):'<div class="empty">مفيش طلبات</div>'}
-$("list").onclick=async e=>{const b=e.target.closest("button");if(!b)return;await ensure();
+ <div class="acts"><button class="btn cbtn" data-c="${o.id}">الرسائل${UN[o.id]?`<i>${UN[o.id]}</i>`:""}</button>${nx?`<button class="btn" data-s="${nx[0]}" data-id="${o.id}">${nx[1]}</button>`:""}${o.status!=="delivered"&&o.status!=="cancelled"?`<button class="btn g" data-s="cancelled" data-id="${o.id}">إلغاء</button>`:""}<button class="btn g" data-del="${o.id}">حذف</button></div></div>`}).join(""):'<div class="empty">مفيش طلبات</div>'}
+$("list").onclick=async e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.c){openChat(b.dataset.c);return}await ensure();
  if(b.dataset.del){if(!confirm("حذف الطلب نهائيًا؟"))return;const r=await fetch(SB+"/rest/v1/mama_orders?id=eq."+b.dataset.del,{method:"DELETE",headers:H()});if(!r.ok)alert("تعذر الحذف");load();return}
  if(b.dataset.s==="cancelled"&&!confirm("إلغاء الطلب؟"))return;
  const r=await fetch(SB+"/rest/v1/mama_orders?id=eq."+b.dataset.id,{method:"PATCH",headers:H(),body:JSON.stringify({status:b.dataset.s})});if(!r.ok)alert("تعذر الحفظ");load()};
@@ -98,5 +107,14 @@ $("menu").onclick=async e=>{const b=e.target.closest("button");if(!b)return;if(b
  if(b.dataset.x){if(!confirm("حذف الصنف نهائيًا؟"))return;await ensure();await fetch(SB+"/rest/v1/mama_menu?id=eq."+b.dataset.x,{method:"DELETE",headers:H()});loadMenu()}};
 $("na").onclick=async()=>{const s=$("ns").value.trim(),n=$("nn").value.trim(),p=Number($("np").value);if(!s||!n||!(p>=0)||$("np").value===""){alert("اكمل القسم والاسم والسعر");return}
  await ensure();const r=await fetch(SB+"/rest/v1/mama_menu",{method:"POST",headers:H(),body:JSON.stringify({section:s,name:n,price:p,sort:(menu.reduce((a,m)=>Math.max(a,m.sort),0)+1)})});if(!r.ok){alert("تعذر الإضافة");return}$("ns").value=$("nn").value=$("np").value="";loadMenu()};
+
+let CO=null,CN=-1;
+async function cload(){if(!CO)return;try{await ensure();const r=await fetch(SB+"/rest/v1/mama_msgs?select=id,sender,body,created_at&order_id=eq."+CO+"&order=id.asc&limit=300",{headers:H()});const m=r.ok?await r.json():[];
+ if(m.length!==CN){CN=m.length;$("cl").innerHTML=m.length?m.map(x=>`<div class="m ${x.sender==="owner"?"me":"cu2"}">${esc(x.body)}<small>${new Date(x.created_at).toLocaleTimeString("ar-EG",{timeZone:"Africa/Cairo",hour:"2-digit",minute:"2-digit"})}</small></div>`).join(""):'<div style="margin:auto;color:#999">مفيش رسائل لسه</div>';$("cl").scrollTop=$("cl").scrollHeight}
+ if(m.some(x=>x.sender==="customer")){const u=await fetch(SB+"/rest/v1/mama_msgs?order_id=eq."+CO+"&sender=eq.customer&seen=eq.false",{method:"PATCH",headers:H(),body:JSON.stringify({seen:true})});if(u.ok&&UN[CO]){UT-=UN[CO];delete UN[CO];render()}}}catch(e){}}
+function openChat(id){const o=orders.find(x=>x.id===id);CO=id;CN=-1;$("ct").textContent=o?o.name+" #"+o.code:"";$("cl").innerHTML="";$("cw").classList.add("on");cload()}
+$("cx").onclick=()=>{$("cw").classList.remove("on");CO=null;load()};
+$("cf").onsubmit=async e=>{e.preventDefault();const b=$("ci").value.trim();if(!b||!CO)return;await ensure();$("ci").value="";const r=await fetch(SB+"/rest/v1/mama_msgs",{method:"POST",headers:H(),body:JSON.stringify({order_id:CO,sender:"owner",body:b})});if(!r.ok){$("ci").value=b;alert("تعذر الإرسال")}CN=-1;cload()};
+setInterval(()=>{if(!document.hidden&&CO)cload()},6000);
 try{S=JSON.parse(sessionStorage.getItem("mama_s")||"null")}catch(e){}if(S)start();
 </script></body></html>
