@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>أكل ماما</title>
-<script src="imgs.js"></script>
+<script src="imgs.js"></script><script src="chef.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -101,6 +101,16 @@ footer{margin-top:60px;background:var(--red-top);color:#fff;text-align:center;pa
 .code{font-size:34px;font-weight:900;letter-spacing:4px;text-align:center;color:var(--red);background:var(--card);border:2px dashed var(--red);border-radius:14px;padding:14px;margin:14px 0;direction:ltr}
 a.lnk{display:block;text-align:center;background:var(--red);color:#fff;text-decoration:none;border-radius:12px;padding:16px;font-weight:700;margin-top:8px}
 .trk{display:block;text-align:center;color:var(--red);font-weight:700;padding:10px;text-decoration:none;font-size:14px}
+.hero .ds{position:absolute;z-index:2;inset-inline-end:auto;left:2%;top:0;bottom:0;display:flex;align-items:center;direction:ltr}
+.hero .ds img{width:clamp(78px,24vw,150px);aspect-ratio:1;object-fit:cover;border-radius:50%;border:4px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.28);margin-inline-start:-26px;background:#fff}
+.hero .ds img:nth-child(2){width:clamp(96px,30vw,185px);z-index:3;margin-top:-6px}.hero .ds img:first-child{margin-inline-start:0}
+.hero{height:clamp(210px,52vw,300px)}.hero h1{font-size:clamp(28px,8.5vw,46px)}
+#sbar{display:none;padding:6px 18px 12px;background:var(--bg)}#sbar.on{display:block}
+#sbar input{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px 16px;font:inherit;font-size:16px;background:var(--card);color:var(--text)}
+.nores{text-align:center;color:var(--muted);padding:30px;display:none}
+.hero{background:#fbf8e9!important;height:clamp(200px,50vw,300px)}.hero::after{display:none!important}
+.hero .chef{position:absolute;left:0;top:0;height:100%;width:auto;aspect-ratio:1;object-fit:cover;z-index:1}
+.hero h1{max-width:50%;z-index:2;color:var(--red)}
 </style>
 </head>
 <body>
@@ -111,18 +121,19 @@ a.lnk{display:block;text-align:center;background:var(--red);color:#fff;text-deco
   </div>
   <div class="logo" role="img" aria-label="أكل ماما"></div>
   <div class="right">
-    <button class="icon" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+    <button class="icon" id="srchBtn" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
     <button class="icon" id="openCart" aria-label="السلة"><svg viewBox="0 0 24 24"><path d="M6 8h12l1 12H5L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="badge" id="badge">0</span></button>
   </div>
 </header>
+<div id="sbar"><input id="sq" type="search" placeholder="ابحث عن طبق..." autocomplete="off"></div>
 
-<div class="hero"><h1>طعم البيت<br>جاهز بحُب</h1><span class="ph">🍲</span></div>
+<div class="hero"><h1>طعم البيت<br>جاهز بحُب</h1><img class="chef" id="chef" alt="" width="260" height="260"></div>
 
 <div class="strip"><span>أكل بيتي طازج وجاهز على التسوية</span><span>💳 الدفع عند الاستلام متاح</span><span>توصيل لحد باب البيت</span><span><a href="track.html" style="color:inherit">📦 تتبع طلبك</a></span></div>
 
 <div class="cats"><div class="cat" data-i="457.jpg"><span>مشويات</span></div><div class="cat" data-i="456.jpg"><span>أطباق رئيسية</span></div></div>
 
-<div id="sections"></div>
+<div id="sections"></div><div class="nores" id="nores">مفيش أطباق بالاسم ده</div>
 
 <footer>© أكل ماما — كل الحقوق محفوظة</footer>
 
@@ -147,6 +158,7 @@ const H={apikey:KEY,"Content-Type":"application/json"};
 const IM=window.IMGS||{};const src=p=>IM[p]||p;
 const _lg=document.querySelector(".logo");if(IM.logo){_lg.style.webkitMaskImage="url("+IM.logo+")";_lg.style.maskImage="url("+IM.logo+")"}
 document.querySelectorAll(".cat").forEach(c=>c.style.backgroundImage="url("+src(c.dataset.i)+")");
+document.getElementById("chef").src=src("chef");
 const cart={};let all={};
 const fmt=n=>Number(n).toFixed(2);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -219,6 +231,11 @@ document.getElementById("goCheckout").onclick=()=>{
 const L=(()=>{try{return JSON.parse(localStorage.getItem("mama_last")||"null")}catch(e){return null}})();
 if(L){const a=document.querySelector(".trk");if(a)a.href="track.html?c="+encodeURIComponent(L.code)+"&p="+encodeURIComponent(L.phone)}
 loadMenu();
+document.getElementById("srchBtn").onclick=()=>{const b=document.getElementById("sbar");b.classList.toggle("on");if(b.classList.contains("on"))document.getElementById("sq").focus();else{document.getElementById("sq").value="";filt()}};
+function filt(){const q=document.getElementById("sq").value.trim().toLowerCase();let any=false;
+ document.querySelectorAll("#sections section").forEach(s=>{let n=0;s.querySelectorAll(".card").forEach(c=>{const m=!q||c.querySelector("h3").textContent.toLowerCase().includes(q);c.style.display=m?"":"none";if(m)n++});s.style.display=n?"":"none";if(n)any=true});
+ document.getElementById("nores").style.display=any||!q?"none":"block"}
+document.getElementById("sq").oninput=filt;
 </script>
 </body>
 </html>
