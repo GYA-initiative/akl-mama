@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>أكل ماما</title>
-<script src="imgs.js"></script><script src="chef.js"></script>
+<script src="imgs.js"></script><script src="auth.js"></script><script src="chef.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -111,13 +111,23 @@ a.lnk{display:block;text-align:center;background:var(--red);color:#fff;text-deco
 .hero{background:#fbf8e9!important;height:clamp(200px,50vw,300px)}.hero::after{display:none!important}
 .hero .chef{position:absolute;left:0;top:0;height:100%;width:auto;aspect-ratio:1;object-fit:cover;z-index:1}
 .hero h1{max-width:50%;z-index:2;color:var(--red)}
+
+.tpill{background:var(--red);color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:9px 14px;border-radius:999px;white-space:nowrap}
+#stk{display:none;position:fixed;z-index:40;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));background:var(--red);color:#fff;border:0;border-radius:16px;padding:16px 18px;font:inherit;font-weight:700;font-size:17px;box-shadow:0 8px 24px rgba(168,30,36,.45);align-items:center;justify-content:space-between;cursor:pointer}
+#stk.on{display:flex}#stk span{font-weight:600;font-size:14px;opacity:.95}
+body.hasstk .wa{bottom:90px!important}body.hasstk footer{padding-bottom:90px}
+.acc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px}
+.acc .tg{display:flex;gap:6px;margin-bottom:6px}.acc .tg button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:none;font:inherit;font-weight:700;color:var(--muted);cursor:pointer}
+.acc .tg button.on{background:var(--red);color:#fff;border-color:var(--red)}
+.who{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:10px;font-size:14px}
+.who a{color:var(--red);font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="top">أكل بيتي فريش جاهز على التسوية</div>
 <header>
   <div class="right">
-    <a class="icon" href="track.html" aria-label="تتبع طلبي" title="تتبع طلبي"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18" stroke-width="1.3"/></svg></a>
+    <a class="tpill" href="track.html">📦 تتبع طلبك</a>
   </div>
   <div class="logo" role="img" aria-label="أكل ماما"></div>
   <div class="right">
@@ -151,6 +161,7 @@ a.lnk{display:block;text-align:center;background:var(--red);color:#fff;text-deco
 </aside>
 
 
+<button id="stk" type="button"><b>إتمام الطلب</b><span id="stkt"></span></button>
 <div class="mod" id="mod"><div class="mb" id="mbody"></div></div>
 <script>
 const SB="https://jedjixrybyxhanaqokre.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplZGppeHJ5Ynl4aGFuYXFva3JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU3MDI4NTYsImV4cCI6MjExMTI3ODg1Nn0.cDuijI1dkCsTh5ycPHUPCugEI1_4xQxCko-uhGBEVJs";
@@ -206,24 +217,32 @@ document.getElementById("goCheckout").onclick=()=>{
   <form id="of" novalidate><label>الاسم</label><input id="fn" autocomplete="name" value="${esc(c.name||"")}" maxlength="80">
   <label>رقم الموبايل</label><input id="fp" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" value="${esc(c.phone||"")}" placeholder="01xxxxxxxxx" maxlength="20">
   <label>العنوان بالتفصيل</label><textarea id="fa" autocomplete="street-address" maxlength="300">${esc(c.address||"")}</textarea>
+  ${MA.session()?`<div class="who"><span>داخل بحساب: <b dir="ltr">${esc(MA.session().email)}</b></span><a id="lo">خروج</a></div>`:`<div class="acc"><div class="tg"><button type="button" id="tn" class="on">حساب جديد</button><button type="button" id="te">عندي حساب</button></div><label>البريد الإلكتروني</label><input id="fm" type="email" dir="ltr" autocomplete="email" inputmode="email" maxlength="120"><label>كلمة المرور</label><input id="fw" type="password" dir="ltr" autocomplete="new-password" maxlength="72" placeholder="6 حروف أو أكتر"></div>`}
   <div class="sum">${ids.map(i=>`<div><span>${esc(all[i].name)} × ${cart[i]}</span><b>${fmt(all[i].price*cart[i])}</b></div>`).join("")}<div style="border-top:1px solid var(--line);margin-top:6px;padding-top:6px"><b style="direction:rtl">الإجمالي</b><b>${fmt(tot)} EGP</b></div><div style="color:var(--muted);font-size:12px"><span>الدفع عند الاستلام. الشحن يتحدد عند التأكيد.</span></div></div>
   <div class="err" id="fe"></div><button class="checkout" id="fs" type="submit">تأكيد الطلب</button><button class="gh" type="button" id="fc">رجوع</button></form>`;
   mod.classList.add("on");
   document.getElementById("fc").onclick=()=>mod.classList.remove("on");
+  let mode="new";const tn=document.getElementById("tn"),te=document.getElementById("te"),lo=document.getElementById("lo");
+  if(tn){tn.onclick=()=>{mode="new";tn.classList.add("on");te.classList.remove("on");fw.autocomplete="new-password"};te.onclick=()=>{mode="old";te.classList.add("on");tn.classList.remove("on");fw.autocomplete="current-password"}}
+  if(lo)lo.onclick=()=>{MA.logout();mod.classList.remove("on");document.getElementById("goCheckout").click()};
   document.getElementById("of").onsubmit=async e=>{
     e.preventDefault();const n=fn.value.trim(),p=fp.value.trim(),a=fa.value.trim(),er=document.getElementById("fe");
     if(n.length<2){er.textContent="اكتب الاسم";return}
     if(p.replace(/\D/g,"").length<8){er.textContent="رقم الموبايل غير صحيح";return}
     if(a.length<5){er.textContent="اكتب العنوان بالتفصيل";return}
+    const em=document.getElementById("fm"),pw=document.getElementById("fw");
+    if(em){if(!/^\S+@\S+\.\S+$/.test(em.value.trim())){er.textContent="اكتب بريد إلكتروني صحيح";return}if(pw.value.length<6){er.textContent="كلمة المرور لازم تكون 6 حروف أو أكتر";return}}
     const btn=document.getElementById("fs");btn.disabled=true;btn.textContent="جاري الإرسال…";er.textContent="";
     try{
-      const r=await fetch(SB+"/rest/v1/rpc/mama_place_order",{method:"POST",headers:H,body:JSON.stringify({p_name:n,p_phone:p,p_address:a,p_notes:document.getElementById("cartNotes").value,p_items:ids.map(i=>({id:Number(i),qty:cart[i]}))})});
-      if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(/too many/.test(j.message||"")?"طلبات كتير في وقت قصير، جرّب بعد شوية":"تعذر إرسال الطلب، جرّب تاني")}
+      if(em){if(mode==="new")await MA.signup(em.value.trim(),pw.value);else await MA.login(em.value.trim(),pw.value)}
+      const tk=await MA.token();if(!tk)throw new Error("سجّل دخول الأول");
+      const r=await fetch(SB+"/rest/v1/rpc/mama_place_order",{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json",Authorization:"Bearer "+tk},body:JSON.stringify({p_name:n,p_phone:p,p_address:a,p_notes:document.getElementById("cartNotes").value,p_items:ids.map(i=>({id:Number(i),qty:cart[i]}))})});
+      if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(/login required/.test(j.message||"")?"سجّل دخول الأول":/too many/.test(j.message||"")?"طلبات كتير في وقت قصير، جرّب بعد شوية":"تعذر إرسال الطلب، جرّب تاني")}
       const code=(await r.json());
       localStorage.setItem("mama_cust",JSON.stringify({name:n,phone:p,address:a}));
       localStorage.setItem("mama_last",JSON.stringify({code,phone:p}));
       ids.forEach(i=>cart[i]=0);document.getElementById("cartNotes").value="";render();open(false);
-      mb.innerHTML=`<h2>تم استلام طلبك ✅</h2><p class="s">احتفظ بكود الطلب لمتابعة حالته.</p><div class="code">${esc(code)}</div><a class="lnk" href="track.html?c=${encodeURIComponent(code)}&p=${encodeURIComponent(p)}">تتبع طلبي</a><button class="gh" id="fc2">إغلاق</button>`;
+      mb.innerHTML=`<h2>تم استلام طلبك ✅</h2><p class="s">احتفظ بكود الطلب لمتابعة حالته.</p><div class="code">${esc(code)}</div><a class="lnk" href="track.html">تتبع طلبي</a><button class="gh" id="fc2">إغلاق</button>`;
       document.getElementById("fc2").onclick=()=>mod.classList.remove("on");
     }catch(x){er.textContent=x.message;btn.disabled=false;btn.textContent="تأكيد الطلب"}
   };
@@ -231,6 +250,10 @@ document.getElementById("goCheckout").onclick=()=>{
 const L=(()=>{try{return JSON.parse(localStorage.getItem("mama_last")||"null")}catch(e){return null}})();
 if(L){const a=document.querySelector(".trk");if(a)a.href="track.html?c="+encodeURIComponent(L.code)+"&p="+encodeURIComponent(L.phone)}
 loadMenu();
+(function(){const st=document.getElementById("stk"),b=document.getElementById("badge"),t=document.getElementById("total"),dr=document.getElementById("drawer");
+ function u(){const n=parseInt(b.textContent)||0;const on=n>0&&!dr.classList.contains("on");st.classList.toggle("on",on);document.body.classList.toggle("hasstk",n>0);document.getElementById("stkt").textContent=n+" صنف · "+t.textContent}
+ new MutationObserver(u).observe(b,{childList:true,characterData:true,subtree:true});new MutationObserver(u).observe(t,{childList:true,characterData:true,subtree:true});new MutationObserver(u).observe(dr,{attributes:true,attributeFilter:["class"]});
+ st.onclick=()=>open(true);u()})();
 document.getElementById("srchBtn").onclick=()=>{const b=document.getElementById("sbar");b.classList.toggle("on");if(b.classList.contains("on"))document.getElementById("sq").focus();else{document.getElementById("sq").value="";filt()}};
 function filt(){const q=document.getElementById("sq").value.trim().toLowerCase();let any=false;
  document.querySelectorAll("#sections section").forEach(s=>{let n=0;s.querySelectorAll(".card").forEach(c=>{const m=!q||c.querySelector("h3").textContent.toLowerCase().includes(q);c.style.display=m?"":"none";if(m)n++});s.style.display=n?"":"none";if(n)any=true});
