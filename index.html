@@ -234,7 +234,34 @@ function showAuth(){
   <div class="err" id="fe"></div><button class="checkout" id="fs" type="submit">متابعة</button><button class="gh" type="button" id="fc">رجوع</button></form>`;
   mod.classList.add("on");
   document.getElementById("fc").onclick=()=>mod.classList.remove("on");
-  const lo=document.getElementById("lo");lo.onclick=()=>{MA.logout();showAuth()};
+  let mode="new";const tn=document.getElementById("tn"),te=document.getElementById("te");
+  tn.onclick=()=>{mode="new";tn.classList.add("on");te.classList.remove("on");fw.autocomplete="new-password"};te.onclick=()=>{mode="old";te.classList.add("on");tn.classList.remove("on");fw.autocomplete="current-password"};
+  document.getElementById("af").onsubmit=async e=>{
+    e.preventDefault();const er=document.getElementById("fe"),em=document.getElementById("fm"),pw=document.getElementById("fw");
+    if(!/^\S+@\S+\.\S+$/.test(em.value.trim())){er.textContent="اكتب بريد إلكتروني صحيح";return}
+    if(pw.value.length<6){er.textContent="كلمة المرور لازم تكون 6 حروف أو أكتر";return}
+    const btn=document.getElementById("fs");btn.disabled=true;btn.textContent="جاري التحميل…";er.textContent="";
+    try{if(mode==="new")await MA.signup(em.value.trim(),pw.value);else await MA.login(em.value.trim(),pw.value);
+      if(!(await MA.token()))throw new Error("تعذر تسجيل الدخول");showDetails()}
+    catch(x){er.textContent=x.message;btn.disabled=false;btn.textContent="متابعة"}
+  };
+}
+document.getElementById("goCheckout").onclick=()=>{
+  const {ids}=render();if(!ids.length){alert("السلة فاضية");return}
+  if(MA.session())showDetails();else showAuth();
+};
+function showDetails(){
+  const {ids,tot}=render();const c=saved();
+  mb.innerHTML=`<h2>بيانات التوصيل</h2><p class="s">اكتب بياناتك وهنجهز طلبك.</p>
+  <form id="of" novalidate><label>الاسم</label><input id="fn" autocomplete="name" value="${esc(c.name||"")}" maxlength="80">
+  <label>رقم الموبايل</label><input id="fp" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" value="${esc(c.phone||"")}" placeholder="01xxxxxxxxx" maxlength="20">
+  <label>العنوان بالتفصيل</label><textarea id="fa" autocomplete="street-address" maxlength="300">${esc(c.address||"")}</textarea>
+  <div class="who"><span>داخل بحساب: <b dir="ltr">${esc((MA.session()||{}).email||"")}</b></span><a id="lo">خروج</a></div>
+  <div class="sum">${ids.map(i=>`<div><span>${esc(all[i].name)} × ${cart[i]}</span><b>${fmt(all[i].price*cart[i])}</b></div>`).join("")}<div style="border-top:1px solid var(--line);margin-top:6px;padding-top:6px"><b style="direction:rtl">الإجمالي</b><b>${fmt(tot)} EGP</b></div><div style="color:var(--muted);font-size:12px"><span>الدفع عند الاستلام. الشحن يتحدد عند التأكيد.</span></div></div>
+  <div class="err" id="fe"></div><button class="checkout" id="fs" type="submit">تأكيد الطلب</button><button class="gh" type="button" id="fc">رجوع</button></form>`;
+  mod.classList.add("on");
+  document.getElementById("fc").onclick=()=>mod.classList.remove("on");
+  document.getElementById("lo").onclick=()=>{MA.logout();showAuth()};
   document.getElementById("of").onsubmit=async e=>{
     e.preventDefault();const n=fn.value.trim(),p=fp.value.trim(),a=fa.value.trim(),er=document.getElementById("fe");
     if(n.length<2){er.textContent="اكتب الاسم";return}
@@ -253,7 +280,7 @@ function showAuth(){
       document.getElementById("fc2").onclick=()=>mod.classList.remove("on");
     }catch(x){er.textContent=x.message;btn.disabled=false;btn.textContent="تأكيد الطلب"}
   };
-};
+}
 const L=(()=>{try{return JSON.parse(localStorage.getItem("mama_last")||"null")}catch(e){return null}})();
 if(L){const a=document.querySelector(".trk");if(a)a.href="track.html?c="+encodeURIComponent(L.code)+"&p="+encodeURIComponent(L.phone)}
 
