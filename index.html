@@ -146,6 +146,11 @@ body.hasstk .wa{bottom:90px!important}body.hasstk footer{padding-bottom:90px}
 
 <div class="hero"><h1>طعم البيت<br>جاهز بحُب</h1><img class="chef" id="chef" alt="" width="260" height="260"></div>
 
+<style>.cta{padding:18px 16px 6px;text-align:center}.cta button{width:100%;max-width:420px;padding:16px;border:0;border-radius:14px;background:var(--red);color:#fff;font:inherit;font-size:22px;font-weight:900;box-shadow:0 8px 20px var(--shadow);cursor:pointer}.how{display:flex;gap:8px;justify-content:center;padding:12px 12px 4px;font-size:14px}.how div{flex:1;max-width:140px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;font-weight:700;color:var(--text)}.how b{display:block;margin:0 auto 4px;width:26px;height:26px;line-height:26px;border-radius:50%;background:var(--red);color:#fff}</style>
+<div class="cta"><button type="button" id="orderNow">اطلب دلوقتي</button></div>
+<div class="how"><div><b>1</b>اختار أكلك</div><div><b>2</b>أضف للسلة</div><div><b>3</b>إتمام الطلب</div></div>
+<script>document.getElementById("orderNow").onclick=function(){var t=document.querySelector(".cats")||document.getElementById("sections");t.scrollIntoView({behavior:"smooth"})}</script>
+
 <div class="strip"><span>أكل بيتي طازج وجاهز على التسوية</span><span>الدفع عند الاستلام متاح</span><span>توصيل لحد باب البيت</span><span><a href="track.html" style="color:inherit">تتبع طلبك</a></span></div>
 
 <div class="cats"><div class="cat" data-i="c1"><span>مشويات</span></div><div class="cat" data-i="c2"><span>أطباق رئيسية</span></div></div>
