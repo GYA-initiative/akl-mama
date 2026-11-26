@@ -16,7 +16,7 @@ window.MA={
  async token(){let s=get();if(!s)return null;if(Date.now()<s.exp)return s.at;
   const r=await call("token?grant_type=refresh_token",{refresh_token:s.rt});if(!r.ok){localStorage.removeItem(K);return null}return put(r.j).at},
  async login(email,pw){const r=await call("token?grant_type=password",{email,password:pw});if(!r.ok)throw new Error(msg(r.j));return put(r.j)},
- async signup(email,pw){const r=await call("signup",{email,password:pw});if(!r.ok)throw new Error(msg(r.j));
+ async signup(email,pw){const r=await call("signup",{email,password:pw,data:{src:"mama"}});if(!r.ok)throw new Error(msg(r.j));
   if(r.j.access_token)return put(r.j);
   if(r.j.user&&r.j.user.identities&&r.j.user.identities.length===0)throw new Error(msg({msg:"already registered"}));
   throw new Error("لازم تأكد البريد من الرسالة اللي وصلتلك وبعدين سجّل دخول")},
