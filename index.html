@@ -216,7 +216,7 @@ function build(menu){
   Object.keys(groups).forEach((title,si)=>{
     const items=groups[title];
     const el=document.createElement("section");el.id="sec"+si;
-    el.innerHTML=`<h2>${esc(title)}</h2><div class="row">${items.map(p=>`<div class="card"><div class="img">${p.img?`<img src="${esc(src(p.img))}" alt="" loading="lazy">`:'<span class="ph">🍽️</span>'}</div><h3>${esc(p.name)}</h3><div class="price">${fmt(p.price)} EGP</div><button class="add" data-id="${p.id}">إضافة إلى السلة</button></div>`).join("")}</div><div class="pager"><button data-d="1" aria-label="التالي">‹</button><span>1/${items.length}</span><button data-d="-1" aria-label="السابق">›</button></div>`;
+    el.innerHTML=`<h2>${esc(title)}</h2><div class="row">${items.map(p=>`<div class="card"><div class="img">${p.img?`<img src="${esc(src(p.img))}" alt="" loading="lazy">`:'<span class="ph">🍽️</span>'}</div><h3>${esc(p.name)}</h3><div class="price">${fmt(p.price)} EGP</div><button class="add" data-id="${p.id}">إضافة إلى السلة</button></div>`).join("")}</div><div class="pager"><button data-d="1" aria-label="التالي">›</button><span>1/${items.length}</span><button data-d="-1" aria-label="السابق">‹</button></div>`;
     sec.appendChild(el);
     const row=el.querySelector(".row"),pg=el.querySelector(".pager span");
     row.addEventListener("scroll",()=>{const w=row.firstElementChild.offsetWidth+16;pg.textContent=Math.min(Math.round(Math.abs(row.scrollLeft)/w)+1,items.length)+"/"+items.length});
